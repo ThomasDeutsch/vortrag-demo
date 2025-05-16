@@ -1,0 +1,106 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Protocol for defining new features, tasks, and sub-tasks. Guides through creating/updating task list files, structuring tasks, handling dependencies, and outlining implementation plans. Includes a visual workflow.
+alwaysApply: false
+---
+
+# Protocol: Feature & Task Definition
+
+When a user initiates the creation or addition of new features, tasks, or
+sub-tasks, follow this protocol. This ensures comprehensive definition and
+proper integration into project task lists.
+
+## Workflow Overview
+
+The following Mermaid diagram illustrates the step-by-step process for feature
+and task definition:
+
+```mermaid
+graph TD
+    AAA[Start New Task/Feature Request] --> NEW_A[Ask User: Target Task List Name/Filename?];
+    NEW_A --> NEW_B{Specified Task List File Exists?};
+    NEW_B -- Yes --> NEW_C[Open Specified Task File];
+    NEW_B -- No --> NEW_D[Ask User: Description for New Task List? (Use filename as default name if none provided)];
+    NEW_D --> NEW_E[Create New Task List File (e.g., TASKS.md, FEATURE_NAME.md) with User-Provided Name & Description];
+    NEW_E --> AAF[Initialize Standard File Structure in New File (see II. Standard Structure & Content from llm_task_list_protocol.md)];
+    NEW_C --> AAG[Review Existing Tasks & Implementation Plan in Opened File];
+    AAF --> AAG;
+    AAG --> AAH_PRE[Define New Task/Sub-task Details with User (Description, Scope)];
+    AAH_PRE --> AAH_DEP{User Input: Does this task depend on an existing task in the list?};
+    AAH_DEP -- Yes --> AAH_POS[Identify Prerequisite Task & Place New Task Below it (in 'Future Tasks' or 'In Progress Tasks')];
+    AAH_DEP -- No --> AAH[Add New Task to Appropriate Section ('Future Tasks' or 'In Progress Tasks')];
+    AAH_POS --> AAI_GATE;
+    AAH --> AAI_GATE;
+    AAI_GATE --> AAI{User Input: Break down this task further into sub-tasks?};
+    AAI -- Yes --> AAJ[Add Sub-tasks Below Parent Task, Indented];
+    AAJ --> AAK[Update/Outline 'Implementation Plan' Section with User Input (Architecture, Dependencies, Coding Style, etc.)];
+    AAI -- No --> AAK;
+    AAK --> AAL[Update/List 'Relevant Files' Section - If any files are already known or created for this task/feature];
+    AAL --> AAM[Confirm with User: Task List Ready/Updated Satisfactorily?];
+    AAM --> END1[End Definition/Update Phase];
+```
+
+## Key Instructions for AI based on Workflow:
+
+1. **Initiation (AAA -> NEW_A):** When the user wants to add/create a task or
+   feature, **always start by asking the user for the specific task list file
+   name** (e.g., `TASKS.md`, `ASSISTANT_CHAT.md`) they want to work with or
+   create.
+2. **File Handling (NEW_B -> NEW_E):**
+   - If the user provides a filename, check if it exists.
+   - If it **exists** (`NEW_C`), open it and review its current content (`AAG`)
+     with the user if necessary.
+   - If it **does not exist** (`NEW_D`), prompt the user for a brief description
+     for this new task list. The filename can be used as a default name. Then,
+     create the file (`NEW_E`).
+3. **Structure Initialization (AAF):** If a new file is created, **initialize it
+   with the standard sections** as defined in the main
+   `llm_task_list_protocol.md` (e.g., `# [Feature Name] Implementation`,
+   `## Completed Tasks`, `## In Progress Tasks`, `## Future Tasks`,
+   `## Implementation Plan`, `### Relevant Files`).
+4. **Task Definition (AAG -> AAH_PRE):** Collaboratively define the new task or
+   sub-task details with the user. Ensure you get a clear description and scope.
+5. **Dependency Check (AAH_DEP):** **Explicitly ask the user if the new task
+   depends on any existing task** in the list.
+   - If yes (`AAH_POS`), ensure the new task is placed directly under its
+     prerequisite task.
+   - If no (`AAH`), add it to the appropriate section.
+6. **Task Formatting:**
+   - All tasks and sub-tasks **must** use GitHub-style checkboxes: `- [ ]` for
+     incomplete tasks.
+   - Sub-tasks should be indented under their parent task.
+7. **Sub-Task Breakdown (AAI -> AAJ):** After a main task is defined, **ask the
+   user if it needs to be broken down into smaller sub-tasks.** If so, add these
+   sub-tasks, indented below the parent.
+8. **Implementation Plan (AAK):** Guide the user to **update or outline the
+   `## Implementation Plan` section**. Prompt for details such as:
+   - Key architectural decisions.
+   - Dependencies (npm packages, other services, abstraction layers needed).
+   - Preferred style of coding (procedural, functional, class-based, etc.), if
+     relevant.
+   - **Crucially**, if these details are not specified by the user, ask where
+     this information can be found (e.g., existing documentation) or directly
+     request the information. Emphasize the importance of documenting the
+     implementation plan. (As per notes in `docs/llm_task_list_protocol.md`).
+9. **Relevant Files (AAL):** Prompt the user to list any relevant files that are
+   already known, created, or will be central to this task/feature.
+10. **Confirmation (AAM):** Before concluding, confirm with the user that the
+    task list has been updated or created to their satisfaction.
+
+## General Reminders:
+
+- Always adhere to the structure specified in the main
+  `llm_task_list_protocol.md` when creating or modifying task list files.
+- Ensure that task descriptions are clear and actionable.
+- If the user seems unsure about any part of the `Implementation Plan`, offer to
+  help them think through it or suggest placeholders for information to be added
+  later.
+
+This rule, when placed in `.cursor/rules/`, will provide you (the AI) with a
+structured approach to help users define their tasks and features effectively.
+Remember to refer to the Mermaid diagram as a visual guide for the flow of
+operations and user interactions.

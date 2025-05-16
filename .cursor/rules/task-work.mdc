@@ -1,0 +1,74 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Protocol for executing tasks from a task list, updating their status, documenting decisions, marking relevant files, and suggesting solution design refinements. Includes a visual workflow.
+alwaysApply: false
+---
+
+# Protocol: Task Execution & Update
+
+When a user indicates they are working on or have completed a task from a project task list, follow this protocol. This ensures tasks are properly updated, and relevant information is captured.
+
+## Workflow Overview
+
+The following Mermaid diagram illustrates the step-by-step process for task execution and updating the task list:
+
+```mermaid
+graph TD
+    BA[Start Task Execution Cycle: User indicates work on/completion of a task] --> BB[AI & User Identify Task in List (e.g., TASKS.md, FEATURE_NAME.md)];
+    BB -- Task Selected/Identified --> BC[User/AI Confirms Task Requirements & Implementation Plan];
+    BC --> BD[User Implements Task (AI may assist if requested)];
+    BD -- Task Implementation Complete --> BE[User Informs AI: Task Completed];
+    BE --> BF[AI Updates Task File IMMEDIATELY: Locate task in 'In Progress Tasks'];
+    BF --> BG[Mark Task as Completed: Change `-[ ]` to `-[x]`];
+    BG --> BH[Move Task from 'In Progress Tasks' to '## Completed Tasks' section];
+    BH --> BI[Add Contextual Comments (Optional but Recommended): e.g., `<!-- Completed YYYY-MM-DD, PR #123 -->`];
+    BI --> BJ[Discuss with User: Document Decisions/Changes in '## Implementation Plan'];
+    BJ -- Details Provided --> BK[AI Updates 'Implementation Plan' with architecture changes, component details, config, etc.];
+    BK --> BL[Discuss with User: Suggest Additions/Refinements to Solution Design?];
+    BL -- Suggestions Made/Approved --> BM[AI Adds suggestions/notes to 'Implementation Plan' or relevant section];
+    BM --> BN[Discuss with User: Mark Touched/Created Files in '### Relevant Files'];
+    BN -- Files Identified --> BO[AI Updates 'Relevant Files' with paths, purpose, and status (e.g., `<!-- ✅ -->`)];
+    BO --> BP{New Tasks/Sub-Tasks Identified During Execution?};
+    BP -- Yes --> BQ[AI Adds New Tasks/Sub-Tasks to 'In Progress' or 'Future Tasks' (with `-[ ]` and `<!-- // added during task execution, because... -->` if sub-task)];
+    BQ --> BR[Confirm with User: Task List Updated Satisfactorily?];
+    BP -- No --> BR;
+    BR --> BS[End Task Update Cycle / Await Next Action];
+```
+
+## Key Instructions for AI based on Workflow:
+
+1.  **Initiation (BA -> BB):** When the user mentions working on, completing, or wanting to update a task, **first identify the specific task and the task list file** it belongs to. If unclear, ask the user.
+2.  **Requirement Confirmation (BC):** Briefly confirm with the user the requirements of the selected task, possibly referencing its description and any notes in the `Implementation Plan`.
+3.  **Task Implementation (BD):** The user performs the task. You (AI) may assist if requested, but the primary action of implementation is by the user.
+4.  **Notification of Completion (BE):** The user will inform you when the task is considered complete.
+5.  **Immediate Task File Update (BF -> BH):**
+    *   Locate the task in the `## In Progress Tasks` section of the identified task list file.
+    *   Change its checkbox from `-[ ]` to `-[x]`.
+    *   Move the entire task line from `## In Progress Tasks` to `## Completed Tasks`.
+6.  **Contextual Comments (BI):** Suggest and, if agreed, add a comment to the completed task for context (e.g., completion date, relevant PR number).
+7.  **Document Decisions & Implementation Details (BJ -> BK):**
+    *   **Crucially, prompt the user to discuss any decisions made, challenges faced, or specific implementation details** encountered while completing the task.
+    *   Update the `## Implementation Plan` section with these details. This could include architectural changes, new component details, configuration adjustments, rationale for certain approaches, etc.
+8.  **Solution Design Refinements (BL -> BM):**
+    *   Based on the completed task and discussion, **proactively ask the user if any insights gained suggest refinements or additions to the overall solution design** documented in the `Implementation Plan` or elsewhere.
+    *   If the user agrees or provides input, incorporate these notes into the `Implementation Plan` or a relevant design document/section.
+9.  **Mark Touched Files (BN -> BO):**
+    *   Ask the user to **list all files that were created, modified, or significantly touched** while implementing the task.
+    *   Update the `### Relevant Files` section by adding new file entries or updating existing ones with their path, purpose, and optionally a status indicator (e.g., `<!-- ✅ -->`).
+10. **New Tasks/Sub-Tasks Discovery (BP -> BQ):**
+    *   Ask the user if completing this task revealed any new tasks or necessary sub-tasks that weren't previously documented.
+    *   If yes, add these to the `## In Progress Tasks` or `## Future Tasks` section using `-[ ]`.
+    *   If it's a sub-task broken down from a larger one during execution, add the comment `<!-- // added during task execution, because... -->`.
+11. **Confirmation (BR):** Before concluding the update for this task, confirm with the user that the task list accurately reflects the progress and all associated information.
+
+## General Reminders:
+
+*   Always refer to the main `llm_task_list_protocol.md` for the base structure and formatting of task list files.
+*   Be proactive in prompting for details for the `Implementation Plan` and `Relevant Files` as these are key to good documentation.
+*   If multiple tasks are completed in sequence by the user, repeat this update cycle for each task.
+
+This rule will guide you (the AI) in systematically updating task lists as users complete their work, ensuring that valuable context, decisions, and changes are captured.
